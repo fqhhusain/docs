@@ -1,68 +1,54 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "theme": "maple",
+  "name": "daily cisea",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#4C3BCF",
+    "light": "#3DC2EC",
+    "dark": "#402E7A"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.ico",
+
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "CTF",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "wait a minute, who are you",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "me/intro"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Write Up",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              {
+              "group": "2025",
+              "pages": ["2025/template"]
+              },
+              {
+              "group": "2026",
+              "pages": []
+              }
             ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
-            ]
+            
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "Resource",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "cryptography",
             "pages": [
-              "api-reference/introduction"
+              "article/main-resource"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "assistant lecturer",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "assistant-lecturer/Basic-Cryptography-and-Hash-Cracking"
             ]
           }
         ]
@@ -71,33 +57,18 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "on repeat",
+          "href": "https://open.spotify.com/intl-de/track/2OCA4JgIosGxYe9jlzApzm?si=a40f506820304050",
+          "icon": "music"
         }
       ]
     }
   },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
   "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "contact me",
+      "href": "https://x.com/0xcisea"
     }
   },
   "contextual": {
@@ -114,9 +85,9 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/0xcisea",
+      "github": "https://github.com/fqhhusain",
+      "linkedin": "https://www.linkedin.com/in/fqhhusain/"
     }
   }
 }
