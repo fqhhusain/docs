@@ -1,16 +1,140 @@
 ---
-title: 'Basic Cryptography and Hash Cracking (under development)'
-description: 'a practical guide'
+title: 'Basic Cryptography and Hash Cracking'
+description: 'visualization and practical guide'
 icon: 'code'
 ---
 
-- Key 
-- Encryption / decryption 
-- Plaintext
-- Ciphertext
+Cryptography is the science of secret writing with the goal of hiding the meaning of a message.
 
 # Encoding / Decoding
-[CyberChef](https://gchq.github.io/CyberChef/)
+
+An encoding scheme is a method of converting one sort of data into another sort of data for example, converting text into numbers. Encoding and decoding function
+are public knowledge and should be fast and easy to compute.
+
+## ASCII
+ASCII is a 7-bit encoding standard which allows the representation of text using the integers 0-127. see [ASCII Table](https://www.ascii-code.com/)
+
+```
+def encode_ascii(text: str):
+    codes = [ord(c) for c in text]           # ASCII/Unicode code points
+    return codes
+
+def decode_ascii(codes: list[int]):
+    return ''.join(chr(n) for n in codes)
+
+if __name__ == "__main__":
+    text = "institut teknologi sepuluh nopember"
+
+    codes = encode_ascii(text)
+    print("Original text:")
+    print(text)
+    print("\nASCII codes (decimal):")
+    print(codes)
+
+    restored = decode_ascii(codes)
+    print("\nDecoded from codes:")
+    print(restored)
+```
+Output
+```
+Original text:
+institut teknologi sepuluh nopember
+
+ASCII codes (decimal):
+[105, 110, 115, 116, 105, 116, 117, 116, 32, 116, 101, 107, 110, 111, 108, 111, 103, 105, 32, 115, 101, 112, 117, 108, 117, 104, 32, 110, 111, 112, 101, 109, 98, 101, 114]
+
+Decoded from codes:
+institut teknologi sepuluh nopember
+```
+
+## Hex 
+
+When we encrypt something the resulting ciphertext commonly has bytes which are not printable ASCII characters. If we want to share our encrypted data, it's common to encode it into something more user-friendly and portable across different systems.
+
+Hexadecimal can be used in such a way to represent ASCII strings. First each letter is converted to an ordinal number according to the ASCII table (as in the previous challenge). Then the decimal numbers are converted to base-16 numbers, otherwise known as hexadecimal. The numbers can be combined together, into one long hex string.
+
+```
+def decode_hex(hex_string: str):
+    return bytes.fromhex(hex_string).decode("ascii")
+
+def encode_hex(text: str):
+    return text.encode("ascii").hex()
+
+if __name__ == "__main__":
+    text = "institut teknologi sepuluh nopember"
+    encoded_text = encode_hex(text)
+    print("\nEncoded text to hex:")
+    print(encoded_text)
+
+    print("\nDecoded back:")
+    print(decode_hex(encoded_text))
+```
+Output
+```
+Encoded text to hex:
+696e7374697475742074656b6e6f6c6f676920736570756c7568206e6f70656d626572
+
+Decoded back:
+institut teknologi sepuluh nopember
+```
+## Base64
+
+Another common encoding scheme is Base64, which allows us to represent binary data as an ASCII string using an alphabet of 64 characters. One character of a Base64 string encodes 6 binary digits (bits), and so 4 characters of Base64 encode three 8-bit bytes.
+
+```
+import base64
+
+def b64_encode_text(text: str) -> str:
+    return base64.b64encode(text.encode("utf-8")).decode("ascii")
+
+def b64_decode_text(b64str: str) -> str:
+    return base64.b64decode(b64str.encode("ascii")).decode("utf-8")
+
+if __name__ == "__main__":
+
+    txt = "institut teknologi sepuluh nopember"
+    b64 = b64_encode_text(txt)
+    print("\nEncode text -> Base64:")
+    print(b64)
+
+    print("\nDecode Base64 -> text:")
+    print(b64_decode_text(b64))
+```
+Output
+```
+Encode text -> Base64:
+aW5zdGl0dXQgdGVrbm9sb2dpIHNlcHVsdWggbm9wZW1iZXI=
+
+Decode Base64 -> text:
+institut teknologi sepuluh nopember
+```
+
+## Bytes and Big Integers
+
+Cryptosystems  works on numbers, but messages are made up of characters.
+The most common way is to take the ordinal bytes of the message, convert them into hexadecimal, and concatenate. This can be interpreted as a base-16/hexadecimal number, and also represented in base-10/decimal.
+Python's PyCryptodome library implements this with the methods `bytes_to_long()` and `long_to_bytes()`.
+
+```
+from Crypto.Util.number import bytes_to_long, long_to_bytes
+
+msg = b"institut teknologi sepuluh nopember"
+
+
+# Convert bytes -> integer
+m = bytes_to_long(msg)
+print("Integer form:", m)
+
+# Convert back integer -> bytes
+print("Recovered message:", long_to_bytes(m))
+
+```
+Output
+```
+Integer form: 800071861804757451250108096703574388044617923339077042606193931454114973447908124018
+Recovered message: b'institut teknologi sepuluh nopember'
+```
+Bisa juga menggunakan tools [CyberChef](https://gchq.github.io/CyberChef/) untuk berbagai macam encoding lainnya.
 
 # Scripting tools 
 
@@ -22,14 +146,61 @@ pip install pycryptodome
 - [Installation guide](https://doc.sagemath.org/html/en/installation/index.html)
 - [How to install SageMath in Ubuntu in 24.04](https://askubuntu.com/questions/1516582/how-to-install-sagemath-in-ubuntu-in-24-04)
 
-# Classic Cipher 
-## Xor
+# Xor
+XOR is a bitwise operator which returns 0 if the bits are the same, and 1 otherwise. In textbooks the XOR operator is denoted by ⊕, but in most challenges and programming languages you will see the caret `^` used instead.
+<Note>
+Xor properties
+- Commutative: A ⊕ B = B ⊕ A
+- Associative: A ⊕ (B ⊕ C) = (A ⊕ B) ⊕ C
+- Identity: A ⊕ 0 = A
+- Self-Inverse: A ⊕ A = 0
+</Note>
+
+Let's put this into practice! Below is a series of outputs where three random keys have been XOR'd together and with the flag. Use the above properties to undo the encryption in the final line to obtain the flag.
+```
+KEY1 = c94133d85deeb56c7d7693863708cacc95bda79a5561a48f8cfdd64c119f4242263ba7
+KEY2 ^ KEY1 = a33ce5d8c29f99dcd7c997901d9f1cef62fea5b338318c43099896d8b99b384fa1424f
+KEY2 ^ KEY3 = 130e347ddc61b9e934130643f69c7b7eb2c2a548078ec70d59f35cb08b642620145a54
+FLAG ^ KEY1 ^ KEY3 ^ KEY2 = b32174d1e8fb79f16911f0aeaffbdddd401622a1379f16eea066aa92f58b010f500481
+```
+<Tip> Before you XOR these objects, be sure to decode from hex to bytes.</Tip>
+Solver
+```
+k1  = bytes.fromhex("c94133d85deeb56c7d7693863708cacc95bda79a5561a48f8cfdd64c119f4242263ba7")
+k21 = bytes.fromhex("a33ce5d8c29f99dcd7c997901d9f1cef62fea5b338318c43099896d8b99b384fa1424f")  # KEY2 ^ KEY1
+k23 = bytes.fromhex("130e347ddc61b9e934130643f69c7b7eb2c2a548078ec70d59f35cb08b642620145a54")  # KEY2 ^ KEY3
+f123= bytes.fromhex("b32174d1e8fb79f16911f0aeaffbdddd401622a1379f16eea066aa92f58b010f500481")  # FLAG ^ KEY1 ^ KEY3 ^ KEY2
+
+bxor = lambda a,b: bytes(x ^ y for x,y in zip(a,b))
+
+k2 = bxor(k1, k21)            # KEY2 = (KEY2 ^ KEY1) ^ KEY1
+k3 = bxor(bxor(k21, k23), k1) # KEY3 = (KEY2^KEY1) ^ (KEY2^KEY3) ^ KEY1
+flag = bxor(bxor(bxor(f123, k1), k3), k2)
+
+print(flag.decode())  
+```
+Output
+```
+institut teknologi sepuluh nopember
+```
 
 # Symmetric
 
+![encrypt](../images/basic-crypto/image-7.png)
+> (1) Alice uses the ENCRYPT function with a secret key to
+transform her message into noise. (2) She then passes the encrypted message
+to her messenger, who will not learn anything about the underlying message.
+(3) Once Bob receives the encrypted message, he can recover the original
+content by using the DECRYPT function with the same secret key Alice used.
+
 ## AES
+The most famous symmetric-key cipher is Advanced Encryption Standard ([AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)), standardised in 2001. 
 
 [Demonstrasi AES](https://legacy.cryptool.org/en/cto/aes-animation)
+
+We can split symmetric-key ciphers into two types, block ciphers and stream ciphers. Block ciphers break up a plaintext into fixed-length blocks, and send each block through an encryption function together with a secret key. Stream ciphers meanwhile encrypt one byte of plaintext at a time, by XORing a pseudo-random keystream with the data. AES is a block cipher but can be turned into a stream cipher using modes of operation such as CTR.
+
+Block ciphers only specify how to encrypt and decrypt individual blocks, and a mode of operation must be used to apply the cipher to longer messages.
 
 ### Mode Operasi AES
 
@@ -37,6 +208,8 @@ pip install pycryptodome
 2. CBC (Cipher Block Chaining)
 3. CTR (Counter)
 4. GCM (Galois/Counter Mode)
+
+more about [Mode operation](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation)
 
 Contoh Kode AES dalam Python:
 ```
@@ -77,22 +250,35 @@ Decrypted: Institut Teknologi Sepuluh Nopember
 ```
 
 ### Attack
-
-## Insecure Symmetric Algorithms
-
+- https://github.com/jvdsn/crypto-attacks/tree/master/attacks
+- https://github.com/ashutosh1206/Crypton/tree/master/Block-Ciphers
+- https://book.jorianwoltjer.com/cryptography/aes
+- https://github.com/Merricx/aes-attack
 
 # Asymmetric
 
-public key
+## Asymmetric encryption
+![asymmetric](../images/basic-crypto/image-8.png)
+> To use asymmetric encryption, Queen Alice needs to first
+publish her public key (represented as an open box here). Now, anyone
+can use the public key to encrypt messages to her. And she should be
+able to decrypt them using the associated private key.
 
-private key
+> Asymmetric encryption: (1) anyone can use Queen Alice’s public
+key to encrypt messages to her. (2) After receiving them, (3) she can decrypt
+the content using her associated private key. Nobody is able to observe the
+messages directed to Queen Alice while they are being sent to her.
 
 ![trapdoor](../images/basic-crypto/image-2.png)
 
+Secure Asymetric encription are built using one-way functions that have a trapdoor. The
+trapdoor is a piece of auxiliary information that allows the inverse to be easily
+computed. A one-way function is an invertible function that is easy to compute, but whose inverse is difficult to
+compute. 
 
-## RSA
-
+### RSA
 ![RSA](../images/basic-crypto/image.png)
+[visualization](https://legacy.cryptool.org/en/cto/rsa-visual)
 
 Contoh Kode RSA dalam Python:
 - Encrypt 
@@ -164,20 +350,45 @@ print('Decrypted:', decrypted)
 
 ```
 
-### Attack
+#### Attack
 
 [Twenty Years of Attacks on the RSA Cryptosystem](https://crypto.stanford.edu/~dabo/papers/RSA-survey.pdf)
 
-#### Implementation
+Implementation
 
 - https://github.com/ashutosh1206/Crypton/tree/master/RSA-encryption
 - https://github.com/jvdsn/crypto-attacks/tree/master/attacks/rsa
 
 ## Diffie–Hellman key exchange
 
-![RSA](../images/basic-crypto/image-3.png)
+![img 9](../images/basic-crypto/image-9.png)
+> in our analogy, Queen
+Alice chooses a triangle as her private
+key, whereas Lord Bob chooses a star
+as his private key.
 
-Contoh Diffie-Hellman Key Exchange:
+![img 10](../images/basic-crypto/image-10.png)
+
+> The second step of
+a DH key exchange where both
+participants exchange their
+public keys. Participants derive
+their public keys by combining
+their private keys with a
+common shape.
+
+![img 11](../images/basic-crypto/image-11.png)
+> The final step of a DH key exchange where both participants
+produce the same shared secret. To do this, Queen Alice combines her
+private key with Lord Bob’s public key, and Lord Bob combines his private
+key with Queen Alice’s public key. The shared secret cannot be obtained
+from solely observing the public keys
+
+Mathematical Formulation of the Diffie–Hellman Key Exchange Protocol
+
+![img 3](../images/basic-crypto/image-3.png)
+
+Contoh Code Diffie-Hellman Key Exchange:
 ```python 
 from cryptography.hazmat.primitives.asymmetric import dh
 from cryptography.hazmat.primitives import serialization
@@ -212,113 +423,116 @@ Bob's shared key: 7dc4ba57b61f23d53f0a...
 Keys match: True
 ```
 
+### Man In The Middle
+
+![img](../images/basic-crypto/image-22.png)
+
 ## Digital Signatures
 
-![Digital Signature](../images/basic-crypto/image-4.png)
+![img](../images/basic-crypto/image-12.png)
+> Lord David already trusts
+Queen Alice. Because Queen Alice trusts
+Lord Bob, can Lord David safely trust Lord
+Bob as well?
 
-## ECC
+![img](../images/basic-crypto/image-13.png)
+> To sign a message, Queen
+Alice uses her private key and generates
+a signature.
 
-[Animated Elliptic Curve](https://curves.xargs.org/)
+![img](../images/basic-crypto/image-14.png)
+> To verify a signature from
+Queen Alice, one also needs the message
+signed and Queen Alice’s public key. The
+result is either validating the signature or
+invalidating it.
 
-### ECDH
 
-### ECDSA
+# Hybrid
 
-### Attack
-https://github.com/elikaski/ECC_Attacks/
+![img](../images/basic-crypto/image-18.png)
+> To use asymmetric encryption as a key exchange primitive, you can (1) generate a
+symmetric key and (2) encrypt it with Alice’s public key. After (3) sending it to Alice, she can (4) decrypt
+it with her associated private key. At the end of the protocol, you both have the shared secret, while no
+one else is able to derive it from observing the encrypted symmetric key alone.
 
-## MAC and key derivation
+![img](../images/basic-crypto/image-19.png)
+> (4) after you send both the encrypted symmetric key and the encrypted
+message to Alice, (5) Alice decrypts the symmetric key using her private key. (6) She then uses the symmetric
+key to decrypt the encrypted message. (Note that steps 5 and 6 can both fail and return errors if the
+communications are tampered with by a MITM attacker at step 4.)
 
-## Hash Function
 
-salting
+# Hash Function
+In cryptography, hash functions transform input data of arbitrary size (e.g. a text message) to a result of fixed size (e.g. 256 bits), which is called hash value (or hash code, message digest, or simply hash). 
 
-hash password
+## Security properties of a hash function
+- pre-image resistance
+![img](../images/basic-crypto/image-15.png)
+> Given the digest produced by a hash
+function (represented as a blender here), it is impossible
+(or technically so hard we assume it will never happen)
+to reverse it and find the original input used. This
+security property is called pre-image resistance.
+- second pre-image resistance
+![img](../images/basic-crypto/image-16.png)
+> Considering an input and its associated
+digest, one should never be able to find a different
+input that hashes to the same output. This security
+property is called second pre-image resistance.
+- collision resistance
+![img](../images/basic-crypto/image-17.png)
+> One should never be able to find two inputs
+(represented on the left as two random blobs of data)
+that hash to the same output value (on the right). This
+security property is called collision resistance
 
-### Collision
-### Algoritma Hash Secure
-### Algoritma Hash Insecure
-### Hash Functions: Applications
+Play with most popular cryptographic hash functions online: https://www.fileformat.info/tool/hash.htm.
 
-Contoh code hash 
-```python
-import hashlib
-import hmac
+## Secure Hash Algorithms
+- [SHA-2](https://en.wikipedia.org/wiki/SHA-2) is a family of strong cryptographic hash functions: SHA-256 (256 bits hash), SHA-384 (384 bits hash), SHA-512 (512 bits hash), etc. 
+- [SHA-3](https://en.wikipedia.org/wiki/SHA-3) (and its variants SHA3-224, SHA3-256, SHA3-384, SHA3-512), is considered more secure than SHA-2 for the same hash length.
+- Keccak-256, which is used in the Ethereum blockchain, is a variant of SHA3-256 with some constants changed in the code.
+- BLAKE2 / BLAKE2s / BLAKE2b .BLAKE is one of the finalists at the [SHA-3 NIST competition](https://en.wikipedia.org/wiki/NIST_hash_function_competition#Finalists). The BLAKE2 hash function has similar security strength like SHA-3, but is less used by developers than SHA2 and SHA3.
+- [RIPEMD-160](https://en.wikipedia.org/wiki/RIPEMD) is a secure hash function, widely used in cryptography, e.g. in PGP and Bitcoin.SHA-2 and SHA-3 are more stronger than RIPEMD, due to higher bit length and less chance for collisions.
 
-# Input
-pt = 'Institut Teknologi Sepuluh Nopember'
-key = 'kripto'
+## Other Secure Hash Functions
+alternatives to SHA-2, SHA-3 and BLAKE2:
+- [Whirlpool](https://en.wikipedia.org/wiki/Whirlpool_(hash_function))
+- SM3 is the crypto hash function, officialy standartized by the Chinese government. It is similar to SHA-256 and produces 256-bit hashes.
+- [GOST](https://en.wikipedia.org/wiki/GOST_(hash_function)) (GOST R 34.11-94) is secure cryptographic hash function, the Russian national standard, described in RFC 4357
 
-# MD5 (tidak aman untuk penggunaan kriptografis)
-md5_hash = hashlib.md5(pt.encode()).hexdigest()
-print(f"MD5: {md5_hash}")
+finalists at the SHA-3 NIST competition:
+[Skein](https://en.wikipedia.org/wiki/Skein_(hash_function)), [Grøstl](https://en.wikipedia.org/wiki/Gr%C3%B8stl), and [JH](https://en.wikipedia.org/wiki/JH_%28hash_function)
 
-# SHA-1 (tidak direkomendasikan untuk penggunaan baru)
-sha1_hash = hashlib.sha1(pt.encode()).hexdigest()
-print(f"SHA-1: {sha1_hash}")
+## Insecure Hash Algorithms
 
-# SHA-256 (direkomendasikan)
-sha256_hash = hashlib.sha256(pt.encode()).hexdigest()
-print(f"SHA-256: {sha256_hash}")
+[SHA0](https://en.wikipedia.org/wiki/SHA-1#SHA-0), [SHA1](https://en.wikipedia.org/wiki/SHA-1), [MD2](https://en.wikipedia.org/wiki/MD2_%28hash_function), [MD4](https://en.wikipedia.org/wiki/MD4), [MD5](https://en.wikipedia.org/wiki/MD5), [Panama](https://en.wikipedia.org/wiki/Panama_%28cryptography), [HAVAL](https://en.wikipedia.org/wiki/HAVAL), [Tiger](https://en.wikipedia.org/wiki/Tiger_%28hash_function), and [SipHash](https://en.wikipedia.org/wiki/SipHash).
 
-# SHA-512 (lebih kuat)
-sha512_hash = hashlib.sha512(pt.encode()).hexdigest()
-print(f"SHA-512: {sha512_hash}")
+## Attack
+### Length-extension Attack
+[length extension attack](https://en.wikipedia.org/wiki/Length_extension_attack) is a type of attack where an attacker can use Hash(message1) and the length of message1 to calculate Hash(message1 ‖ message2) for an attacker-controlled message2, without needing to know the content of message1.
 
-# Contoh salting
-salt = "garam_rahasia"
-salted_input = pt + salt
-sha256_salted = hashlib.sha256(salted_input.encode()).hexdigest()
-print(f"SHA-256 dengan salt: {sha256_salted}")
+[Implementation](https://github.com/zademn/EverythingCrypto/blob/master/S3-Message-Integrity/Length_Extension_attacks.ipynb)
 
-# HMAC (Hash-based Message Authentication Code)
-hmac_sha256 = hmac.new(key.encode(), pt.encode(), hashlib.sha256).hexdigest()
-print(f"HMAC-SHA256: {hmac_sha256}")
-```
-Output:
-```
-MD5: 9fee4eca8227fa5700eda3c75c66ea25
-SHA-1: e85c3f1dde4b2fe8841181e33642952a5c73151c
-SHA-256: dc56d4b16655b69592a47f07ddb4f708561b12560cae8e7d22b6178a3d144e15
-SHA-512: 62dc1b435fd032c12e066ed717fa918e9ceabc63d20a59c851d8a92ccbd867948b1161...
-SHA-256 dengan salt: c474513a67428e8aff17a51bcc2a923c4b9201825d55e709ce688cfcc054c61b
-HMAC-SHA256: 6b65bf69bc6fb03e70c3c4f143470010faed5c0c8e2857c8f5dce40597babbe1
-```
-Contoh Verifikasi Integritas Data :
-```python
-def verify_data_integrity(data, stored_hash):
-    """Verifikasi integritas data dengan membandingkan hash."""
-    calculated_hash = hashlib.sha256(data.encode()).hexdigest()
-    if calculated_hash == stored_hash:
-        return True, "Data tidak berubah"
-    else:
-        return False, "Integritas data rusak"
+tools:
+- https://github.com/thecrabsterchief/hash-length-extension
+- https://github.com/stephenbradshaw/hlextend
+### Birthday Attack/mitm
+A [birthday attack](https://en.wikipedia.org/wiki/Birthday_attack) is a bruteforce collision attack that exploits the mathematics behind the birthday problem in probability theory.
 
-# Data asli dan hash tersimpan
-original_data = 'Institut Teknologi Sepuluh Nopember'
-stored_hash = hashlib.sha256(original_data.encode()).hexdigest()
+[Implementation](https://github.com/zademn/EverythingCrypto/blob/master/S3-Message-Integrity/Birhtday_attack.ipynb)
 
-# Kasus 1: Data tidak berubah
-test_data1 = 'Institut Teknologi Sepuluh Nopember'
-result1, message1 = verify_data_integrity(test_data1, stored_hash)
-print(f"Kasus 1: {message1}")
+tools:
+- https://github.com/cr-marcstevens/hashclash
+- https://github.com/corkami/collisions
 
-# Kasus 2: Data berubah
-test_data2 = 'Institut Teknologi Sepuluh November'
-result2, message2 = verify_data_integrity(test_data2, stored_hash)
-print(f"Kasus 2: {message2}")
+### Password Cracking
+Password cracking (also called password hacking) is an attack vector that involves hackers attempting to crack or determine a password for unauthorized authentication.
 
-```
-Output
-```
-Kasus 1: Data tidak berubah
-Kasus 2: Integritas data rusak
-```
+Pada modul ini kita akan melakukan jenis serangan Dictionary Attack. Dictionary Attack akan mencoba meng-hash baris per baris dalam wordlist dan akan membandingkannya dengan hash yang telah dibocorkan. Apabila hashnya sama maka password sebenarnya telah ditemukan.
 
-### Hash Cracking
-
-- Bruteforce Attack 
-- Dictionary Attack 
+![img](../images/basic-crypto/image-20.png)
 
 misalnya menggunakan **rockyou.txt** di dalam kali linux.
 
@@ -496,6 +710,7 @@ gunakan `hashcat -h` atau `man hashcat` untuk detail lebih lanjut. Atau gunakan 
 | `hashcat --show hash_value` | Show result of an already cracked hash |
 | `hashcat --example-hashes	` | Show all example hashes |
 
-## Referensi
+# Referensi
 
 - [Practical Cryptography](https://cryptobook.nakov.com/)
+- [Real-World Cryptography](https://digitallibrary.peninsulacollege.edu.my/items/cefe8084-680c-4bb6-818d-d8e9e96d0fa7)

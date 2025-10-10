@@ -42,13 +42,15 @@
           {
             "group": "cryptography",
             "pages": [
-              "article/main-resource"
+              "article/main-resource",
+              "article/RSA"
             ]
           },
           {
             "group": "assistant lecturer",
             "pages": [
-              "assistant-lecturer/Basic-Cryptography-and-Hash-Cracking"
+              "assistant-lecturer/Basic-Cryptography-and-Hash-Cracking",
+              "assistant-lecturer/Elliptic-curve"
             ]
           }
         ]
