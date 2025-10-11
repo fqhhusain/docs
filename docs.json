@@ -50,6 +50,7 @@
             "group": "assistant lecturer",
             "pages": [
               "assistant-lecturer/Basic-Cryptography-and-Hash-Cracking",
+              "mychall/pai",
               "assistant-lecturer/Elliptic-curve"
             ]
           }
