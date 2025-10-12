@@ -16,6 +16,13 @@ For all challenges except the final one, the flag format is `cry{}`.
 ## xorxor
 Remember XOR property? The flag is XORed again with a secret 4-byte key (KEY5) for extra security.
 ```
+k1=KEY1 
+k21=KEY2 ^ KEY1 
+k23=KEY2 ^ KEY3 
+k1234=KEY4 ^ KEY1 ^ KEY3 ^ KEY2 
+f45=FLAG ^KEY4^KEY5
+```
+```
 k1=3c3f0193af37d2ebbc50cc6b91d27cf61197
 k21=ff76edcad455b6881b92f726987cbf30c68c
 k23=611568312c102d4d921f26199d39fe973118
