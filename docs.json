@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "maple",
-  "name": "daily cisea",
+  "name": "dailycisea",
   "colors": {
     "primary": "#4C3BCF",
     "light": "#3DC2EC",
@@ -49,7 +49,8 @@
             "group": "assistant lecturer",
             "pages": [
               "assistant-lecturer/Basic-Cryptography-and-Hash-Cracking",
-              "mychall/pai"
+              "mychall/pai",
+              "assistant-lecturer/Elliptic-curve"
             ]
           }
         ]
