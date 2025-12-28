@@ -8,7 +8,6 @@
     "dark": "#402E7A"
   },
   "favicon": "/favicon.ico",
-
   "navigation": {
     "tabs": [
       {
@@ -24,15 +23,16 @@
             "group": "Write Up",
             "pages": [
               {
-              "group": "2025",
-              "pages": ["2025/template"]
+                "group": "2025",
+                "pages": [
+                  "2025/template"
+                ]
               },
               {
-              "group": "2026",
-              "pages": []
+                "group": "2026",
+                "pages": []
               }
             ]
-            
           }
         ]
       },
@@ -42,7 +42,8 @@
           {
             "group": "cryptography",
             "pages": [
-              "article/main-resource"
+              "article/main-resource",
+              "article/abstract algebra"
             ]
           },
           {
@@ -70,26 +71,24 @@
     "primary": {
       "type": "button",
       "label": "contact me",
-      "href": "https://x.com/0xcisea"
+      "href": "https://discord.com/users/740026198909779990"
     }
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/0xcisea",
-      "github": "https://github.com/fqhhusain",
-      "linkedin": "https://www.linkedin.com/in/fqhhusain/"
+      "x": "https://x.com/dailycisea"
     }
   }
 }
